@@ -3,11 +3,15 @@ import { useEffect, useState } from 'react';
 
 import { getLiveChannels } from '../utils/fetchChannels';
 import { GetChannelList } from '../utils/storage';
+import { getChannelOtherLive } from '../utils/fetchChannels';
 
 const LiveChannels = () : JSX.Element => {
 	const [channels, setChannels] = useState([]);
 	const [ids, setIds] = useState([]);
-	
+	const [items, setOtherLive] = useState<any[]>([]);
+
+	console.log(items)
+
 	useEffect(() => {
 		async function data() {
 			let tmp = await getLiveChannels();
@@ -17,6 +21,11 @@ const LiveChannels = () : JSX.Element => {
 			let json = await GetChannelList();
 			setIds(json);
 		}
+		async function getOtherLive() {
+			let tmp = await getChannelOtherLive();
+			setOtherLive(tmp);
+		}
+		getOtherLive();
 		data();
 		getList();
 	}, [])
@@ -28,6 +37,13 @@ const LiveChannels = () : JSX.Element => {
 				data={channels}
 				renderItem={({item}) => <Text>{item.channel.name}</Text>}
 				
+			/>
+
+			<Text style={{fontSize: 20, fontWeight: 'bold', marginLeft: 30}}>List of non homolive channels that are live: </Text>
+
+			<FlatList
+				data={items}
+				renderItem={({item}) => <Text>{item.channelTitle}</Text>}
 			/>
 
 			<Text style={{fontSize: 20, fontWeight: 'bold', marginLeft: 30}}>Channel ID list </Text>

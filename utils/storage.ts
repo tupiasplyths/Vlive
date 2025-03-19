@@ -2,11 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 async function UpdateChannelList(channelID:string) : Promise<void> {
     let list = [];
-    AsyncStorage.getItem('channels').then((res) => {
+    await AsyncStorage.getItem('channels').then((res) => {
         if (res) list = JSON.parse(res);
     }).catch((err) => console.log(err));
-    // if (!list) {
-    // }
     list.push(channelID);
     AsyncStorage.setItem('channels', JSON.stringify(list));
     return;
