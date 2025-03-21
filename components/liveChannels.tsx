@@ -10,13 +10,12 @@ const LiveChannels = () : JSX.Element => {
 	const [ids, setIds] = useState([]);
 	const [items, setOtherLive] = useState<any[]>([]);
 
-	console.log(items)
 
-	useEffect(() => {
-		async function data() {
-			let tmp = await getLiveChannels();
-			setChannels(tmp);
-		} 
+		useEffect(() => {
+			async function data() {
+				let tmp = await getLiveChannels();
+				setChannels(tmp);
+			} 
 		async function getList() {
 			let json = await GetChannelList();
 			setIds(json);

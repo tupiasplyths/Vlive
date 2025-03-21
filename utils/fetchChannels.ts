@@ -1,16 +1,16 @@
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GetChannelList } from './storage';
 
-function updateQueryStringParameter(uri: string, key: string, value: string) :string {
-	var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-	var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-	if (uri.match(re)) {
-	  return uri.replace(re, '$1' + key + "=" + value + '$2');
-	}
-	else {
-	  return uri + separator + key + "=" + value;
-	}
-}
+// function updateQueryStringParameter(uri: string, key: string, value: string) :string {
+// 	var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+// 	var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+// 	if (uri.match(re)) {
+// 	  return uri.replace(re, '$1' + key + "=" + value + '$2');
+// 	}
+// 	else {
+// 	  return uri + separator + key + "=" + value;
+// 	}
+// }
 
 function updateQueryStringParameters(uri: string, params: Record<string, string>): string {
     let result = uri;
@@ -41,10 +41,10 @@ export async function getLiveChannels() {
 	// 	'UCV5ZZlLjk5MKGg3L0n0vbzw',
 	// ];
 	const channelIDs = await GetChannelList();
-	let url = updateQueryStringParameter(
-		'https://holodex.net/api/v2/users/live', 
-		'channels', 
-		channelIDs.join(',')
+	let url = updateQueryStringParameters(
+		'https://holodex.net/api/v2/users/live', {
+			channels:channelIDs.join(',') 	
+		}
 	);
 	var channels: any[] = [];
 	console.log('url: ', url);
@@ -64,30 +64,68 @@ export async function getLiveChannels() {
 	return channels;
 }
 export async function getChannelOtherLive() {
+    const channels : string[] = [
+		// '@IGN',
+		// '@LofiGirl',
+		// '@daylaphegame',
+	] ;
 	const gg_url="https://www.googleapis.com/youtube/v3/search"
-	let url = updateQueryStringParameters(gg_url, {
-		part: 'snippet',
-		q :'@daylaphegame',
-		type: 'video',
-		eventType: 'live',
-		key: GG_API_KEY,
-	});
 	var items: any[] = [];
-	await fetch(url, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		}
-	}).then((response) => response.json())
-	.then((json) => {
-		items = filtersdata(json);
-	})
-	.catch((error) => {
-		console.error(error);
-	})
-	console.log("items: ", items);
-	return items;
+	try{
+		for (const channelname of channels){
+			let url = updateQueryStringParameters(gg_url, {
+				part: 'snippet',
+				q : channelname,
+				type: 'video',
+				eventType: 'live',
+				key: GG_API_KEY,
+			});
+			console.log('url: ', url);
+			const response = await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			})
+				const json = await response.json();
+				const channelItems = filterData(json);
+				items = [...items, ...channelItems];
+			}
+			}catch(error){
+				console.error(error);
+			}
+		// console.log("items: ", items);
+		return items;
+	}
+
+export async function getChannelID(channelName: string) {
+	const gg_url="https://www.googleapis.com/youtube/v3/search"
+	var channels: any[] = [];
+	try{
+			let url = updateQueryStringParameters(gg_url, {
+				part: 'snippet',
+				q : channelName,
+				type: 'channel',
+				key: GG_API_KEY,
+			});
+			console.log('url: ', url);
+			const response = await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			})
+				const json = await response.json();
+				const channelItems = filterId(json);
+				channels = [...channels,...channelItems]
+
+			}catch(error){
+				console.error(error);
+			}
+		console.log("items: ", channels);
+		return channels;
 }
+
 function filterLiveChannels(json:any) : Array<any> {
 	let channels:Array<any> = [];
 	for (let i = 0; i < json.length; i++) {
@@ -98,13 +136,26 @@ function filterLiveChannels(json:any) : Array<any> {
 	console.log("number of live channels: ", channels.length);
 	return channels;
 }
-function filtersdata(json:any) : Array<any> {
+function filterData(json:any) : Array<any> {
 	let items:Array<any> = [];
 	json.items.forEach(item => {
         if (item.snippet && item.snippet.liveBroadcastContent === 'live') {
             items.push({
                 liveBroadcastContent: item.snippet.liveBroadcastContent,
                 channelTitle: item.snippet.channelTitle
+            });
+        }
+    });
+	return items;
+}
+function filterId(json:any) : Array<any> {
+	let items:Array<any> = [];
+	json.items.forEach(item => {
+        if (item.snippet) {
+            items.push({
+				channelTitle: item.snippet.channelTitle,
+				channelThumbnail: item.snippet.thumbnails.medium.url,
+                ChannelIDs:item.snippet.channelId
             });
         }
     });
