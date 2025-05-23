@@ -11,7 +11,6 @@ const handleDelete = async (channelId) => {
       text2: 'Gone',
       position: 'bottom',
     });
-    await 
   } catch (error) {
     console.error("Error", error);
     Toast.show({
