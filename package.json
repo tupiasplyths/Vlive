@@ -10,18 +10,20 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
-        "@react-native-async-storage/async-storage": "1.23.1",
-        "@react-navigation/drawer": "^6.6.15",
-        "@types/react": "~18.3.12",
-        "expo": "^52.0.38",
-        "expo-status-bar": "~2.0.1",
-        "react": "18.3.1",
-        "react-dom": "18.3.1",
-        "react-native": "0.76.7",
-        "react-native-gesture-handler": "~2.20.2",
-        "react-native-reanimated": "^3.16.1",
-        "react-native-web": "~0.19.10",
-        "typescript": "~5.3.3"
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-navigation/drawer": "^6.6.15",
+    "@types/react": "~18.3.12",
+    "dotenv": "^16.5.0",
+    "expo": "~52.0.42",
+    "expo-status-bar": "~2.0.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.9",
+    "react-native-dotenv": "^3.4.11",
+    "react-native-gesture-handler": "~2.20.2",
+    "react-native-reanimated": "^3.16.1",
+    "react-native-web": "~0.19.10",
+    "typescript": "~5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -22,7 +22,7 @@ function Search() {
             
             setLoading(true);
             setError(null);
-            
+                
             try {
               // Get raw channel data using getChannelID
               const rawChannelData = await getChannelID(searchQuery);
@@ -65,7 +65,7 @@ function Search() {
               </View>
               <TouchableOpacity
                 style={styles.add}
-                onPress={() => UpdateChannelList(item.ChannelIDs)}
+                onPress={() => UpdateChannelList(item.ChannelIDs,'add')}
                 >
                 <Text style={styles.addText}>Add</Text>
             </TouchableOpacity>
