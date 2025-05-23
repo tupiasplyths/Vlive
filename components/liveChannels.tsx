@@ -5,6 +5,7 @@ import { getLiveChannels } from '../utils/fetchChannels';
 import { GetChannelList, UpdateChannelList } from '../utils/storage';
 import { getChannelOtherLive } from '../utils/fetchChannels';
 import {openYouTubeVideo} from '../utils/Redirect';
+import { handleDelete } from '../utils/ResponseHelper';
 
 const LiveChannels = () : JSX.Element => {
 	 const renderChannelItem = ({ item }: { item: any }) => ( 
@@ -25,7 +26,7 @@ const LiveChannels = () : JSX.Element => {
             <View style={styles.actionButtonsContainer}>
                 <TouchableOpacity
                     style={styles.actionButton}
-                    onPress={() => UpdateChannelList(item.ChannelID, 'delete')} 
+                    onPress={() => handleDelete(item.ChannelID)} 
                 >
                     <Text style={styles.actionButtonText}>Delete</Text>
                 </TouchableOpacity>

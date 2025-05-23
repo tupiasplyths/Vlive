@@ -6,7 +6,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import LiveChannels from './components/liveChannels';
 import { Input, Flush } from './components/inputs';
 import { Search } from './components/search';
-
+import Toast from 'react-native-toast-message';
 
 
 const Drawer = createDrawerNavigator();
@@ -24,6 +24,7 @@ export default function App() {
 				<Drawer.Screen name="Flush Channel List" component={Flush} />
 			</Drawer.Navigator>
 		</NavigationContainer>
+		<Toast />
 	</GestureHandlerRootView>
 	);
 }

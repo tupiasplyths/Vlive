@@ -1,9 +1,8 @@
 import { Linking, Alert, Platform } from 'react-native';
 
 const openYouTubeVideo = async (videoId: string) => {
-  const appURL = Platform.OS === 'ios' 
-    ? `youtube://watch?v=${videoId}` 
-    : `vnd.youtube:${videoId}`; 
+
+    const appURL = `vnd.youtube:${videoId}`;
 
   const webURL = `https://www.youtube.com/watch?v=${videoId}`;
 
@@ -17,12 +16,12 @@ const openYouTubeVideo = async (videoId: string) => {
       if (canOpenWebURL) {
         await Linking.openURL(webURL);
       } else {
-        Alert.alert("Lỗi", "Không thể mở YouTube. Vui lòng kiểm tra cài đặt của bạn.");
+        Alert.alert("Lỗi", "Me can't open Youtube app for you");
       }
     }
   } catch (error) {
     console.error("Lỗi khi mở YouTube:", error);
-    Alert.alert("Lỗi", "Đã có lỗi xảy ra khi cố gắng mở YouTube.");
+    Alert.alert("Error");
   }
 };
 
