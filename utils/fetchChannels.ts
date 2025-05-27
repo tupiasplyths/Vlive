@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GetChannelList } from './storage';
+import { GetChannelList, UpdateChannelList } from './storage';
 import {GG_API_KEY,HOLODEX_API_KEY} from '@env';
 
 function updateQueryStringParameters(uri: string, params: Record<string, string>): string {
@@ -52,8 +52,11 @@ export async function getLiveChannels() {
 	return channels;
 }
 export async function getChannelOtherLive() {
+	let koseki = "UC9p_lqQ0FEDz327Vgf5JwqA"
     const channels = await GetChannelList();
-	console.log('channels: ', channels);
+	if(channels === null) {
+		UpdateChannelList(koseki, 'add');
+	}
 	const gg_url="https://www.googleapis.com/youtube/v3/search"
 	var items: any[] = [];
 	try{

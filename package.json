@@ -13,8 +13,7 @@
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/drawer": "^6.6.15",
     "@types/react": "~18.3.12",
-    "dotenv": "^16.5.0",
-    "expo": "~52.0.42",
+    "expo": "~52.0.46",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -23,11 +22,11 @@
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "^3.16.1",
     "react-native-toast-message": "^2.3.0",
-    "react-native-web": "~0.19.10",
+    "react-native-web": "~0.19.13",
     "typescript": "~5.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.25.2"
   },
   "private": true
 }

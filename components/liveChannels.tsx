@@ -7,6 +7,8 @@ import { getChannelOtherLive } from '../utils/fetchChannels';
 import {openYouTubeVideo} from '../utils/Redirect';
 import { handleDelete } from '../utils/ResponseHelper';
 
+
+
 const LiveChannels = () : JSX.Element => {
 	 const renderChannelItem = ({ item }: { item: any }) => ( 
         <View style={styles.channelItemContainer}> 
@@ -26,7 +28,7 @@ const LiveChannels = () : JSX.Element => {
             <View style={styles.actionButtonsContainer}>
                 <TouchableOpacity
                     style={styles.actionButton}
-                    onPress={() => handleDelete(item.ChannelID)} 
+                    onPress={() => handleDelete(item.ChannelID,loadData)} 
                 >
                     <Text style={styles.actionButtonText}>Delete</Text>
                 </TouchableOpacity>
@@ -36,21 +38,16 @@ const LiveChannels = () : JSX.Element => {
 	const [refreshing, setRefreshing] = useState(false);
 	const [channels, setChannels] = useState([]);
 	const [items, setOtherLive] = useState<any[]>([]);
-
-		const loadData = useCallback(async () => {
+	const loadData = useCallback(async () => {
         setRefreshing(true); 
         try {
-            const liveChannelsData = await getLiveChannels(); 
-            setChannels(liveChannelsData);
-
             const otherLiveData = await getChannelOtherLive(); 
             setOtherLive(otherLiveData);
-
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu:", error);
         } finally {
             setRefreshing(false);
-        }
+        }	
     }, []); 
 
     useEffect(() => {

@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 async function UpdateChannelList(channelID:string,operation:'add'|'delete' = 'add') : Promise<void> {
     try{
         const channelList = await AsyncStorage.getItem('channels');
-
         const list : string[] = channelList ? JSON.parse(channelList) : [];
         console.log('Current channel list:', list);
     if(operation === 'add'){
