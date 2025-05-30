@@ -2,9 +2,9 @@ import { Linking, Alert, Platform } from 'react-native';
 
 const openYouTubeVideo = async (videoId: string) => {
 
-    const appURL = `vnd.youtube:${videoId}`;
+    const appURL = `youtube://watch?v=${videoId}`;
 
-  const webURL = `https://www.youtube.com/watch?v=${videoId}`;
+  // const webURL = `https://www.youtube.com/watch?v=${videoId}`;
 
   try {
     const canOpenAppURL = await Linking.canOpenURL(appURL);

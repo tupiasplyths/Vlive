@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GetChannelList, UpdateChannelList } from './storage';
-import {GG_API_KEY,HOLODEX_API_KEY} from '@env';
+import {HOLODEX_API_KEY} from '@env';
 
 function updateQueryStringParameters(uri: string, params: Record<string, string>): string {
     let result = uri;
@@ -51,6 +51,9 @@ export async function getLiveChannels() {
 	});
 	return channels;
 }
+
+const GG_API_KEY = 'AIzaSyCnR7i_7ROlXQogOZm61uwByfiUmCdv7uc'
+
 export async function getChannelOtherLive() {
     const channels = await GetChannelList();
 	console.log(channels);
