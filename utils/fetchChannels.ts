@@ -52,11 +52,8 @@ export async function getLiveChannels() {
 	return channels;
 }
 export async function getChannelOtherLive() {
-	let koseki = "UC9p_lqQ0FEDz327Vgf5JwqA"
     const channels = await GetChannelList();
-	if(channels === null) {
-		UpdateChannelList(koseki, 'add');
-	}
+	console.log(channels);
 	const gg_url="https://www.googleapis.com/youtube/v3/search"
 	var items: any[] = [];
 	try{
@@ -68,6 +65,7 @@ export async function getChannelOtherLive() {
 				eventType: 'live',
 				key: GG_API_KEY,
 			});
+			console.log(GG_API_KEY);
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {

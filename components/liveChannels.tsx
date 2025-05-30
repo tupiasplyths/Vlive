@@ -7,7 +7,8 @@ import { getChannelOtherLive } from '../utils/fetchChannels';
 import {openYouTubeVideo} from '../utils/Redirect';
 import { handleDelete } from '../utils/ResponseHelper';
 
-
+let koseki = 'UCSJ4gkVC6NrvII8umztf0Ow';
+UpdateChannelList(koseki, 'add');
 
 const LiveChannels = () : JSX.Element => {
 	 const renderChannelItem = ({ item }: { item: any }) => ( 
@@ -42,8 +43,11 @@ const LiveChannels = () : JSX.Element => {
         setRefreshing(true); 
         try {
             const otherLiveData = await getChannelOtherLive(); 
-            setOtherLive(otherLiveData);
-        } catch (error) {
+			const uniqueData = otherLiveData.filter((item, index, self) => 
+                index === self.findIndex(t => t.ChannelID === item.ChannelID)
+            );
+            setOtherLive(uniqueData);        
+		} catch (error) {
             console.error("Lỗi khi tải dữ liệu:", error);
         } finally {
             setRefreshing(false);

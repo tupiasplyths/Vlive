@@ -15,16 +15,16 @@ const Drawer = createDrawerNavigator();
 
 export default function App() {
 	
-
 	return (
 	<GestureHandlerRootView style={{ flex: 1 }}>
 		<NavigationContainer>
 			<Drawer.Navigator>
 				<Drawer.Screen name="Home" component={LiveChannels} />
 				<Drawer.Screen name="Search Channel" component={Search} />
+				<Drawer.Screen name="Flush" component={Flush} />
 			</Drawer.Navigator>
-		</NavigationContainer>
 		<Toast />
+		</NavigationContainer>
 	</GestureHandlerRootView>
 	);
 }
