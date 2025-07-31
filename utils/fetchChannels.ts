@@ -21,14 +21,6 @@ function updateQueryStringParameters(uri: string, params: Record<string, string>
 }
 
 export async function getLiveChannels() {
-	// const channelIDs :string[] = [
-	// 	'UCdyqAaZDKHXg4Ahi7VENThQ',
-	// 	'UCJFZiqLMntJufDCHc6bQixg',
-	// 	'UCim0N3tvLijU_I3jbJeJV8g',
-	// 	'UC6eWCld0KwmyHFbAqK3V-Rw',
-	// 	'UCFKOVgVbGmX65RxO3EtH3iw',
-	// 	'UCV5ZZlLjk5MKGg3L0n0vbzw',
-	// ];
 	const channelIDs = await GetChannelList();
 	let url = updateQueryStringParameters(
 		'https://holodex.net/api/v2/users/live', {
@@ -99,6 +91,32 @@ export async function getChannelID(channelName: string) {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
+				}
+			})
+				const json = await response.json();
+				const channelItems = filterId(json);
+				channels = [...channels,...channelItems]
+
+			}catch(error){
+				console.error(error);
+			}
+		return channels;
+}
+export async function getTwitchLiveStatus(channelName: string) {
+	const tw_url="https://api.twitch.tv/helix/streams"
+	var channels: any[] = [];
+	try{
+			let url = updateQueryStringParameters(tw_url, {
+				user_id : channelName,
+				type: 'channel',
+				key: GG_API_KEY,
+			});
+			const response = await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Client-ID': '', 
+					'Authorization':' Bearer ', 
 				}
 			})
 				const json = await response.json();

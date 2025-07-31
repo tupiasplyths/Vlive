@@ -1,6 +1,5 @@
 import { View, Text, FlatList,TouchableOpacity,Image ,StyleSheet,ScrollView, RefreshControl} from 'react-native';
 import { useEffect, useState,useCallback } from 'react';
-
 import { getLiveChannels } from '../utils/fetchChannels';
 import { GetChannelList, UpdateChannelList } from '../utils/storage';
 import { getChannelOtherLive } from '../utils/fetchChannels';
@@ -10,7 +9,7 @@ import { handleDelete } from '../utils/ResponseHelper';
 let koseki = 'UCSJ4gkVC6NrvII8umztf0Ow';
 UpdateChannelList(koseki, 'add');
 
-const LiveChannels = () : JSX.Element => {
+const LiveChannels = () : React.JSX.Element => {
 	 const renderChannelItem = ({ item }: { item: any }) => ( 
         <View style={styles.channelItemContainer}> 
             <TouchableOpacity
