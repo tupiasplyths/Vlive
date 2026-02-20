@@ -5,6 +5,8 @@ import {Pressable, Text, View, FlatList, Image, TextInput,TouchableOpacity} from
 import { UpdateChannelList, flushList } from '../utils/storage';
 
 import { getChannelID} from '../utils/fetchChannels';
+import { handleAdd } from '../utils/ResponseHelper';
+
 
 
 
@@ -22,7 +24,7 @@ function Search() {
             
             setLoading(true);
             setError(null);
-            
+                
             try {
               // Get raw channel data using getChannelID
               const rawChannelData = await getChannelID(searchQuery);
@@ -65,7 +67,7 @@ function Search() {
               </View>
               <TouchableOpacity
                 style={styles.add}
-                onPress={() => UpdateChannelList(item.ChannelIDs)}
+                onPress={() => handleAdd(item.ChannelIDs)}
                 >
                 <Text style={styles.addText}>Add</Text>
             </TouchableOpacity>
