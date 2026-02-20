@@ -1,7 +1,15 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./types"],
+    "typeRoots": [
+      "./types"
+    ],
     "forceConsistentCasingInFileNames": true,
+    "target": "ESNext",
+    "lib": [
+      "ES2017",
+      "ESNext",
+      "DOM"
+    ]
   },
   "extends": "expo/tsconfig.base"
 }
