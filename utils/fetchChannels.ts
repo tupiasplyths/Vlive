@@ -1,5 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GetChannelList, UpdateChannelList } from './storage';
+import { GetChannelIDs } from './storage';
 import { HOLODEX_API_KEY, GG_API_KEY, TWITCH_CLIENT_ID, TWITCH_ACCESS_TOKEN } from '@env';
 
 function updateQueryStringParameters(uri: string, params: Record<string, string>): string {
@@ -21,7 +20,7 @@ function updateQueryStringParameters(uri: string, params: Record<string, string>
 }
 
 export async function getLiveChannels() {
-	const channelIDs = await GetChannelList();
+	const channelIDs = await GetChannelIDs();
 	let url = updateQueryStringParameters(
 		'https://holodex.net/api/v2/users/live', {
 		channels: channelIDs.join(',')
@@ -47,7 +46,7 @@ export async function getLiveChannels() {
 
 
 export async function getChannelOtherLive() {
-	const channels = await GetChannelList();
+	const channels = await GetChannelIDs();
 	console.log(channels);
 	const gg_url = "https://www.googleapis.com/youtube/v3/search"
 	var items: any[] = [];
@@ -67,6 +66,9 @@ export async function getChannelOtherLive() {
 					'Content-Type': 'application/json',
 				}
 			})
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
 			const json = await response.json();
 			const channelItems = filterData(json);
 			items = [...items, ...channelItems];
@@ -101,6 +103,39 @@ export async function getChannelID(channelName: string) {
 		console.error(error);
 	}
 	return channels;
+}
+
+export async function getChannelInfo(channelId: string): Promise<{ id: string; name: string; thumbnail: string } | null> {
+	const gg_url = "https://www.googleapis.com/youtube/v3/channels";
+	try {
+		let url = updateQueryStringParameters(gg_url, {
+			part: 'snippet',
+			id: channelId,
+			key: GG_API_KEY,
+		});
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const json = await response.json();
+		if (json.items && json.items.length > 0) {
+			const item = json.items[0];
+			return {
+				id: item.id,
+				name: item.snippet.title,
+				thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || '',
+			};
+		}
+		return null;
+	} catch (error) {
+		console.error('Error fetching channel info:', error);
+		return null;
+	}
 }
 export async function getTwitchLiveStatus(channelName: string) {
 	const tw_url = "https://api.twitch.tv/helix/streams"
@@ -144,7 +179,9 @@ function filterData(json: any): Array<any> {
 			items.push({
 				liveBroadcastContent: item.snippet.liveBroadcastContent,
 				channelTitle: item.snippet.channelTitle,
-				channelThumbnail: item.snippet.thumbnails.medium.url,
+				channelThumbnail: item.snippet.thumbnails?.medium?.url
+					|| item.snippet.thumbnails?.default?.url
+					|| '',
 				VideoId: item.id.videoId,
 				ChannelID: item.snippet.channelId,
 			});
@@ -158,7 +195,9 @@ function filterId(json: any): Array<any> {
 		if (item.snippet) {
 			items.push({
 				channelTitle: item.snippet.channelTitle,
-				channelThumbnail: item.snippet.thumbnails.medium.url,
+				channelThumbnail: item.snippet.thumbnails?.medium?.url
+					|| item.snippet.thumbnails?.default?.url
+					|| '',
 				ChannelIDs: item.snippet.channelId
 			});
 		}

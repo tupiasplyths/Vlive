@@ -1,15 +1,13 @@
 import { View, Text, FlatList,TouchableOpacity,Image ,StyleSheet,ScrollView, RefreshControl} from 'react-native';
-import { useEffect, useState,useCallback } from 'react';
+import { useState,useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { getLiveChannels } from '../utils/fetchChannels';
-import { GetChannelList, UpdateChannelList } from '../utils/storage';
+import { GetChannelIDs } from '../utils/storage';
 import { getChannelOtherLive } from '../utils/fetchChannels';
-import {openYouTubeVideo} from '../utils/Redirect';
+import { openYouTubeVideo } from '../utils/Redirect';
 import { handleDelete } from '../utils/ResponseHelper';
 
-let koseki = 'UCSJ4gkVC6NrvII8umztf0Ow';
-UpdateChannelList(koseki, 'add');
-
-const LiveChannels = () : React.JSX.Element => {
+const LiveChannels = (): React.JSX.Element => {
 	 const renderChannelItem = ({ item }: { item: any }) => ( 
         <View style={styles.channelItemContainer}> 
             <TouchableOpacity
@@ -39,7 +37,7 @@ const LiveChannels = () : React.JSX.Element => {
 	const [channels, setChannels] = useState([]);
 	const [items, setOtherLive] = useState<any[]>([]);
 	const loadData = useCallback(async () => {
-        setRefreshing(true); 
+        setRefreshing(true);
         try {
             const otherLiveData = await getChannelOtherLive(); 
 			const uniqueData = otherLiveData.filter((item, index, self) => 
@@ -51,11 +49,13 @@ const LiveChannels = () : React.JSX.Element => {
         } finally {
             setRefreshing(false);
         }	
-    }, []); 
+    }, []);
 
-    useEffect(() => {
-        loadData(); 
-    }, [loadData]); 
+    useFocusEffect(
+        useCallback(() => {
+            loadData();
+        }, [loadData])
+    );
 	return (
 		<View style={styles.container}>
             <FlatList
