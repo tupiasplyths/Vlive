@@ -1,38 +1,90 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-async function UpdateChannelList(channelID:string,operation:'add'|'delete' = 'add') : Promise<void> {
-    try{
-        const channelList = await AsyncStorage.getItem('channels');
-        const list : string[] = channelList ? JSON.parse(channelList) : [];
-        console.log('Current channel list:', list);
-    if(operation === 'add'){
-        if (!list.includes(channelID)) {
-            list.push(channelID);
-            
-        }else{
-            console.log('Channel already in list:', channelID);
+export interface Channel {
+    id: string;
+    name: string;
+    thumbnail: string;
+    type: 'holodex' | 'youtube';
+    addedAt: number;
+}
+
+async function MigrateOldData(): Promise<void> {
+    try {
+        const oldData = await AsyncStorage.getItem('channels');
+        if (!oldData) return;
+        
+        const parsed = JSON.parse(oldData);
+        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'string') {
+            const migrated: Channel[] = parsed.map((id: string) => ({
+                id,
+                name: 'Unknown Channel',
+                thumbnail: '',
+                type: 'youtube' as const,
+                addedAt: Date.now(),
+            }));
+            await AsyncStorage.setItem('channels', JSON.stringify(migrated));
+            console.log('Migrated old channel data');
         }
-    }else if(operation=== 'delete'){
-        console.log('Deleting channel:', channelID);
-        const updatedList = list.filter((id) => id !== channelID);
-        if(updatedList.length < list.length) {
-            console.log('Channel removed from list:', channelID);
-            await AsyncStorage.setItem('channels', JSON.stringify(updatedList));
-            return;
-        }
-    }
-    await AsyncStorage.setItem('channels', JSON.stringify(list));
-    }catch(err){
-        console.error('Error updating channel list:', err);
+    } catch (err) {
+        console.error('Error migrating data:', err);
     }
 }
 
-async function GetChannelList() {
-    return JSON.parse(await AsyncStorage.getItem('channels'));
+async function GetChannelList(): Promise<Channel[]> {
+    try {
+        await MigrateOldData();
+        const data = await AsyncStorage.getItem('channels');
+        return data ? JSON.parse(data) : [];
+    } catch (err) {
+        console.error('Error getting channel list:', err);
+        return [];
+    }
 }
 
-async function flushList() {
+async function AddChannel(id: string, name: string, thumbnail: string, type: 'holodex' | 'youtube'): Promise<boolean> {
+    try {
+        const list = await GetChannelList();
+        if (list.some(ch => ch.id === id)) {
+            console.log('Channel already in list:', id);
+            return false;
+        }
+        list.push({
+            id,
+            name,
+            thumbnail,
+            type,
+            addedAt: Date.now(),
+        });
+        await AsyncStorage.setItem('channels', JSON.stringify(list));
+        return true;
+    } catch (err) {
+        console.error('Error adding channel:', err);
+        return false;
+    }
+}
+
+async function DeleteChannel(id: string): Promise<boolean> {
+    try {
+        const list = await GetChannelList();
+        const filtered = list.filter(ch => ch.id !== id);
+        if (filtered.length < list.length) {
+            await AsyncStorage.setItem('channels', JSON.stringify(filtered));
+            return true;
+        }
+        return false;
+    } catch (err) {
+        console.error('Error deleting channel:', err);
+        return false;
+    }
+}
+
+async function GetChannelIDs(): Promise<string[]> {
+    const list = await GetChannelList();
+    return list.map(ch => ch.id);
+}
+
+async function flushList(): Promise<void> {
     await AsyncStorage.removeItem('channels');
 }
 
-export { GetChannelList, UpdateChannelList, flushList };
+export { GetChannelList, AddChannel, DeleteChannel, GetChannelIDs, flushList };
