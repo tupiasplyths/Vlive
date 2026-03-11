@@ -9,6 +9,7 @@ import LiveChannels from './components/liveChannels';
 import { Input, Flush } from './components/inputs';
 import { Search } from './components/search';
 import ChannelList from './components/channelList';
+import PCControl from './components/PCControl';
 import Toast from 'react-native-toast-message';
 
 
@@ -46,6 +47,7 @@ export default function App() {
 				<Drawer.Screen name="Home" component={HomeScreenWithRefresh} />
 				<Drawer.Screen name="My Channels" component={ChannelList} />
 				<Drawer.Screen name="Search Channel" component={Search} />
+				<Drawer.Screen name="PC Control" component={PCControl} />
 				<Drawer.Screen name="Add by ID" component={Input} />
 				<Drawer.Screen name="Flush" component={Flush} />
 			</Drawer.Navigator>
