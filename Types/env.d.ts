@@ -3,4 +3,5 @@ declare module '@env' {
     export const HOLODEX_API_KEY: string;
     export const TWITCH_CLIENT_ID: string;
     export const TWITCH_ACCESS_TOKEN: string;
+    export const WAKEPC_SERVER_URL: string;
 }
